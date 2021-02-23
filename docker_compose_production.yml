@@ -8,32 +8,40 @@ volumes:
 
 
 services:
-
-  node:
-    container_name: node
-    image: "node:14"
-    restart: always
+  
+  node_front:
+    container_name: node_front
+    image: "node:14" 
     working_dir: /home/node/app
     volumes:
       - ./app/:/home/node/app
     ports:
       - "3000:3000"
+    links:
+      - emqx
+      - mongo
+    command: sh -c "npm run start_front"
+
+  node_back:
+    container_name: node_back
+    image: "node:14"
+    working_dir: /home/node/app
+    volumes:
+      - ./app/:/home/node/app
+    ports:
       - "3001:3001"
       - "80:3002"
-
+      - "65080:65080"
     links:
       - emqx
       - mongo
 
-    command: sh -c "echo 'delaying 30 seconds' && sleep 30 && npm run start"
+    command: sh -c "echo 'delaying 30 seconds' && sleep 30 && npm run start_back"
     #command: sh -c "npm install"
 
   mongo:
     container_name: mongo
     image: mongo:4.4
-    restart: always
-    logging:
-      driver: "none"
     environment:
       TZ: "${TZ}"
       MONGO_INITDB_ROOT_USERNAME: "${MONGO_USERNAME}"
@@ -42,26 +50,23 @@ services:
       - ./mongodata:/data/db
     ports:
       - ${MONGO_EXT_PORT}:27017
+    logging:
+      driver: "none"
 
   emqx:
     container_name: emqx
     image: emqx/emqx:4.2.3
-    restart: always
-
     ports:
       - 18083:18083
       - 1883:1883
       - 8083:8083
       - 8085:8081
-
     volumes:
       - vol-emqx-data:/opt/emqx/data
       - vol-emqx-log:/opt/emqx/log
-
-  
     links:
       - mongo
-
+      - node_back
     extra_hosts:
       - "localhost:192.168.0.6"
 
@@ -114,3 +119,38 @@ services:
 
       EMQX_LISTENER__TCP__EXTERNAL__MAX_CONNECTIONS: 1000
 
+
+  portainer:
+      container_name: portainer
+      image: portainer/portainer
+      command: -H unix:///var/run/docker.sock
+      restart: always
+      ports:
+        - 9090:9000
+        - 8000:8000
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - ./portainer_data:/data
+      logging:
+        driver: none
+
+  netdata:
+    image: netdata/netdata
+    container_name: netdata
+    hostname: demo.ioticos.com # set to fqdn of host
+    ports:
+      - 18888:19999
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./netdata/netdata-etc:/etc/netdata
+    environment:
+      - PGID=999
+      - VIRTUALIZATION=kvm
+    logging:
+      driver: none

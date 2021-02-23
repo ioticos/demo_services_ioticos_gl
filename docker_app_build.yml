@@ -1,0 +1,14 @@
+version: "3.8"
+
+
+services:
+
+  node_builder:
+    container_name: node_builder
+    image: "node:14"
+    working_dir: /home/node/app
+    volumes:
+      - ./app/:/home/node/app
+
+
+    command: sh -c "sudo rm -r dist && sudo rm -r api/dist && npm run build_front && npm run build_back"

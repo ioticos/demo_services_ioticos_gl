@@ -308,7 +308,7 @@ sudo sh -c "echo '' >> $filename"
 #A P I  - N O D E 
 sudo sh -c "echo '#A P I  - N O D E ' >> $filename"
 sudo sh -c "echo 'API_PORT=3001' >> $filename"
-sudo sh -c "echo 'WEBHOOKS_HOST=node' >> $filename"
+sudo sh -c "echo 'WEBHOOKS_HOST=node_back' >> $filename"
 sudo sh -c "echo 'MQTT_NOTIFICATION_HOST=${IP}' >> $filename"
 sudo sh -c "echo '' >> $filename"
 
@@ -348,5 +348,5 @@ sudo sh -c " echo 'SSLREDIRECT=${SSLREDIRECT}' >> $filename"
 cd ..
 
 sudo docker-compose -f docker_node_install.yml up
-sudo docker-compose -f docker_nuxt_build.yml up
+sudo docker-compose -f docker_app_build.yml up
 sudo docker-compose -f docker_compose_production.yml up 
