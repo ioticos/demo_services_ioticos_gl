@@ -17,9 +17,6 @@ services:
       - ./app/:/home/node/app
     ports:
       - "3000:3000"
-    links:
-      - emqx
-      - mongo
     command: sh -c "npm run start_front"
 
   node_back:
@@ -32,9 +29,10 @@ services:
       - "3001:3001"
       - "80:3002"
       - "65080:65080"
-    links:
-      - emqx
-      - mongo
+    networks:
+      main:
+        aliases:
+          - node_back
 
     command: sh -c "echo 'delaying 30 seconds' && sleep 30 && npm run start_back"
     #command: sh -c "npm install"
@@ -50,6 +48,10 @@ services:
       - ./mongodata:/data/db
     ports:
       - ${MONGO_EXT_PORT}:27017
+    networks:
+      main:
+        aliases:
+          - mongo
     logging:
       driver: "none"
 
@@ -64,9 +66,10 @@ services:
     volumes:
       - vol-emqx-data:/opt/emqx/data
       - vol-emqx-log:/opt/emqx/log
-    links:
-      - mongo
-      - node_back
+    networks:
+      main:
+        aliases:
+          - emqx
     extra_hosts:
       - "localhost:192.168.0.6"
 
@@ -154,3 +157,6 @@ services:
       - VIRTUALIZATION=kvm
     logging:
       driver: none
+
+networks:
+  main:
