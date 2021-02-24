@@ -11,4 +11,4 @@ services:
       - ./app/:/home/node/app
 
 
-    command: sh -c "sudo rm -r dist && sudo rm -r api/dist && npm run build_front && npm run build_back"
+    command: sh -c "rm -r dist -f && rm -r api/dist -f && npm run build_front && npm run build_back"
