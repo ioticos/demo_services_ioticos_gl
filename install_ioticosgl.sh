@@ -271,7 +271,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 sudo git clone https://ioticos:Pinonfijo1980@github.com/ioticos/demo_services_ioticos_gl.git
 
-sudo mv ioticos_god_level_services ioticos
+sudo mv demo_services_ioticos_gl ioticos
 
 
 cd ioticos
