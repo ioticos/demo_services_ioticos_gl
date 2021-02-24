@@ -268,7 +268,9 @@ sudo ./install_docker.sh
 sudo rm install_docker.sh
 sudo curl -L "https://github.com/docker/compose/releases/download/1.28.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
-sudo git clone https://github.com/ioticos/ioticos_god_level_services.git
+
+sudo git clone https://ioticos:Pinonfijo1980@github.com/ioticos/demo_services_ioticos_gl.git
+
 sudo mv ioticos_god_level_services ioticos
 
 
