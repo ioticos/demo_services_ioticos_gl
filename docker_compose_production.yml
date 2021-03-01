@@ -11,7 +11,8 @@ services:
   
   node_front:
     container_name: node_front
-    image: "node:14" 
+    image: "node:14"
+    restart: always
     working_dir: /home/node/app
     volumes:
       - ./app/:/home/node/app
@@ -22,6 +23,7 @@ services:
   node_back:
     container_name: node_back
     image: "node:14"
+    restart: always
     working_dir: /home/node/app
     volumes:
       - ./app/:/home/node/app
@@ -40,6 +42,7 @@ services:
   mongo:
     container_name: mongo
     image: mongo:4.4
+    restart: always
     environment:
       TZ: "${TZ}"
       MONGO_INITDB_ROOT_USERNAME: "${MONGO_USERNAME}"
@@ -58,6 +61,7 @@ services:
   emqx:
     container_name: emqx
     image: emqx/emqx:4.2.3
+    restart: always
     ports:
       - 18083:18083
       - 1883:1883
@@ -122,20 +126,6 @@ services:
 
       EMQX_LISTENER__TCP__EXTERNAL__MAX_CONNECTIONS: 1000
 
-
-  portainer:
-      container_name: portainer
-      image: portainer/portainer
-      command: -H unix:///var/run/docker.sock
-      restart: always
-      ports:
-        - 9090:9000
-        - 8000:8000
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-        - ./portainer_data:/data
-      logging:
-        driver: none
 
   netdata:
     image: netdata/netdata
